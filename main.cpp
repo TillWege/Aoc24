@@ -5,8 +5,9 @@
 #include "colors.h"
 #include "days/Day01.h"
 #include "days/Day02.h"
+#include "days/Day03.h"
 
-const int DAYS_IMPLEMENTED = 2;
+const int DAYS_IMPLEMENTED = 3;
 int cursor = DAYS_IMPLEMENTED;
 bool exitFlag = false;
 
@@ -68,6 +69,9 @@ void solveDay()
 	} else if(cursor == 2){
 		d2p1();
 		d2p2();
+	} else if(cursor == 3){
+		d3p1();
+		d3p2();
 	} else {
 		std::cout << BOLDRED << "Day " << cursor  << RESET << " not implemented yet" << std::endl;
 	}
