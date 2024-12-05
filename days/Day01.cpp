@@ -6,10 +6,10 @@
 #include <fstream>
 #include <vector>
 #include <iostream>
-#include "../common.h"
 #include "Day01.h"
 #include <algorithm>
 #include <cmath>
+#include "../common.h"
 #include "../colors.h"
 
 void d1p1() {

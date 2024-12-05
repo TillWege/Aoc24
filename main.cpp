@@ -4,8 +4,9 @@
 #include <windows.h>
 #include "colors.h"
 #include "days/Day01.h"
+#include "days/Day02.h"
 
-const int DAYS_IMPLEMENTED = 1;
+const int DAYS_IMPLEMENTED = 2;
 int cursor = DAYS_IMPLEMENTED;
 bool exitFlag = false;
 
@@ -64,32 +65,55 @@ void solveDay()
 	if (cursor == 1) {
 		d1p1();
 		d1p2();
+	} else if(cursor == 2){
+		d2p1();
+		d2p2();
 	} else {
 		std::cout << BOLDRED << "Day " << cursor  << RESET << " not implemented yet" << std::endl;
 	}
 }
 
-int main() {
-	signal(SIGINT, signalHandler);
-	hideCursor();
-	displayMenu();
+int main(int argc, char *argv[]) {
+	bool isInteractive = true;
 
-	while (!exitFlag) {
-		if (_kbhit()) {
-			char key = _getch();
-			if (key == 27) break; // ESC to exit
+	if(argc > 1)
+	{
+		std::string interactiveFlag = "-auto";
+		std::string flag = argv[1];
+		isInteractive = flag != interactiveFlag;
+	}
 
-			int oldCursor = cursor;
-			if (key == 72 && cursor > 1) cursor--; // Up arrow
-			if (key == 80 && cursor < 25) cursor++; // Down arrow
-			if (key == 13) {
-				solveDay();
-				break;
-			} else if (oldCursor != cursor) {
-				displayMenu();
+	if(isInteractive)
+	{
+		signal(SIGINT, signalHandler);
+		hideCursor();
+		displayMenu();
+
+		while (!exitFlag)
+		{
+			if (_kbhit())
+			{
+				char key = _getch();
+				if (key == 27) break; // ESC to exit
+
+				int oldCursor = cursor;
+				if (key == 72 && cursor > 1) cursor--; // Up arrow
+				if (key == 80 && cursor < 25) cursor++; // Down arrow
+				if (key == 13)
+				{
+					solveDay();
+					break;
+				}
+				else if (oldCursor != cursor)
+				{
+					displayMenu();
+				}
 			}
 		}
+	} else {
+		solveDay();
 	}
+
 
 	return 0;
 }
