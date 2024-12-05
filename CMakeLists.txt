@@ -7,5 +7,6 @@ add_executable(AoC24 main.cpp
         colors.h
         days/Day01.cpp
         days/Day01.h
+        common.h
 )
 

@@ -3,6 +3,7 @@
 #include <csignal>
 #include <windows.h>
 #include "colors.h"
+#include "days/Day01.h"
 
 const int DAYS_IMPLEMENTED = 1;
 int cursor = DAYS_IMPLEMENTED;
@@ -59,7 +60,13 @@ void displayMenu() {
 
 void solveDay()
 {
-	std::cout << "Running day " << cursor << std::endl;
+	std::cout << "Running " << BOLDGREEN << "day " << cursor << RESET << std::endl;
+	if (cursor == 1) {
+		d1p1();
+		d1p2();
+	} else {
+		std::cout << BOLDRED << "Day " << cursor  << RESET << " not implemented yet" << std::endl;
+	}
 }
 
 int main() {
