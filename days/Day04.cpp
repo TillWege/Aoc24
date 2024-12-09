@@ -5,9 +5,7 @@
 #include "Day04.h"
 #include "../common.h"
 #include "../colors.h"
-#include <cstdio>
 #include <fstream>
-#include <iosfwd>
 #include <iostream>
 #include <vector>
 
@@ -27,26 +25,27 @@ enum dir {
 Vec2 fromDir(dir dir) {
     switch (dir) {
         case TOP:
-            return Vec2(0, -1);
+            return { 0, -1 };
         case TOPRIGHT:
-            return Vec2(1, -1);
+            return { 1, -1 };
         case RIGHT:
-            return Vec2(1, 0);
+            return { 1, 0 };
         case BOTTOMRIGHT:
-            return Vec2(0, 1);
+            return { 1, 1 };
         case BOTTOM:
-            return Vec2(0, 1);
+            return { 0, 1 };
         case BOTTOMLEFT:
-            return Vec2(1, 1);
+            return { -1, 1 };
         case LEFT:
-            return Vec2(1, 0);
+            return { -1, 0 };
         case TOPLEFT:
-            return Vec2(1, -1);
+            return { -1, -1 };
     }
 }
 
-int checkLetter(Vec2 pos) {
+int findXMAS(Vec2 pos) {
     auto maxDim = data.size();
+	auto lineLength = data[0].length();
 
     int foundCount = 0;
     for(int i = 0; i<8;i++) {
@@ -56,14 +55,13 @@ int checkLetter(Vec2 pos) {
         auto maxDir = vec * 3;
         auto maxPos = pos + maxDir;
 
-
-        if(maxPos.x < 0 || maxPos.y < 0 || maxPos.x > maxDim-1 || maxPos.y > maxDim )
+        if(maxPos.x < 0 || maxPos.y < 0 || maxPos.x >= lineLength || maxPos.y >= maxDim )
         {
             continue;
         }
 
         for(int j = 0; j<4;j++) {
-            testStr += data[pos.x + (vec.x * j)][pos.y + (vec.y * j)];
+            testStr += data[pos.y + (vec.y * j)][pos.x + (vec.x * j)];
         }
 
         if(testStr == "XMAS")
@@ -72,27 +70,105 @@ int checkLetter(Vec2 pos) {
     return foundCount;
 }
 
-// zwischen 2088 und 4392
-
 void d4p1() {
     std::ifstream file("./Inputs/Day04.txt");
     std::string str;
 
     while (std::getline(file, str))
-        data.push_back(str.substr(0, str.size() - 1));
+        data.push_back(str.substr(0, str.size()));
 
 
     int sum = 0;
-    for (int i = 0; i < data.size(); i++) {
-        for (int j = 0; j < data.size(); j++) {
-            if (data[i][j] == 'X'){}
-                sum += checkLetter(Vec2(i, j));
+    for (int line = 0; line < data.size(); line++) {
+		auto strLength = data[line].length();
+        for (int idx = 0; idx < strLength; idx++) {
+			char c = data[line][idx];
+            if (c == 'X'){
+				sum += findXMAS(Vec2(idx, line));
+			}
+
         }
     }
 
     std::cout << "Found XMAS " << BOLDGREEN << sum << " times" << RESET << std::endl;
 }
 
-void d4p2() {
+bool findCrossMass(Vec2 pos) {
+	auto maxDim = data.size();
+	auto lineLength = data[0].length();
 
-};
+	// cant be on edge
+	if(pos.x <= 0 || pos.y <= 0 || pos.x >= lineLength || pos.y >= maxDim - 1 )
+	{
+		return false;
+	}
+
+	bool tlbr = false;
+	bool trbl = false;
+
+	// check topleft / bottomright
+	Vec2 tlVec = {
+		pos.x - 1,
+		pos.y - 1
+	};
+
+	Vec2 brVec = {
+		pos.x + 1,
+		pos.y + 1
+	};
+
+	std::string str1;
+
+	str1 += data[tlVec.y][tlVec.x];
+	str1 += data[pos.y][pos.x];
+	str1 += data[brVec.y][brVec.x];
+
+	tlbr = str1 == "MAS" || str1 == "SAM";
+
+
+	// check topright / bottomleft
+	Vec2 trVec = {
+		pos.x + 1,
+		pos.y - 1
+	};
+
+	Vec2 blVec = {
+		pos.x - 1,
+		pos.y + 1
+	};
+
+	std::string str2;
+
+	str2 += data[trVec.y][trVec.x];
+	str2 += data[pos.y][pos.x];
+	str2 += data[blVec.y][blVec.x];
+
+	trbl = str2 == "MAS" || str2 == "SAM";
+
+	return (trbl && tlbr);
+}
+
+void d4p2() {
+	std::ifstream file("./Inputs/Day04.txt");
+	std::string str;
+
+	data.clear();
+
+	while (std::getline(file, str))
+		data.push_back(str.substr(0, str.size()));
+
+
+	int sum = 0;
+	for (int line = 0; line < data.size(); line++) {
+		auto strLength = data[line].length();
+		for (int idx = 0; idx < strLength; idx++) {
+			char c = data[line][idx];
+			if (c == 'A'){
+				sum += findCrossMass(Vec2(idx, line));
+			}
+
+		}
+	}
+
+	std::cout << "Found X-MAS " << BOLDGREEN << sum << " times" << RESET << std::endl;
+}

@@ -15,6 +15,7 @@
 struct Vec2 {
     Vec2( int x,int y ) : x(x), y(y) {}
     Vec2 operator+( Vec2 &other );
+	Vec2 operator-( Vec2 &other );
     Vec2 operator*(int other);
     std::ostream operator<<(std::ostream &os);
 
@@ -26,6 +27,13 @@ inline Vec2 Vec2::operator+(Vec2 &other){
         this->x + other.x,
         this->y + other.y
     };
+}
+
+inline Vec2 Vec2::operator-(Vec2 &other){
+	return {
+		this->x - other.x,
+		this->y - other.y
+	};
 }
 
 inline Vec2 Vec2::operator*(int other){

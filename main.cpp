@@ -35,6 +35,15 @@ void hideCursor() {
   info.bVisible = FALSE;
   SetConsoleCursorInfo(consoleHandle, &info);
 }
+
+void showCursor() {
+  HANDLE consoleHandle = GetStdHandle(STD_OUTPUT_HANDLE);
+  CONSOLE_CURSOR_INFO info;
+  info.dwSize = 100;
+  info.bVisible = TRUE;
+  SetConsoleCursorInfo(consoleHandle, &info);
+}
+
 #else
 void setCursorPosition(int x, int y) {
     std::cout << "\033[" << (y + 1) << ";" << (x + 1) << "H";
