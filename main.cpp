@@ -3,6 +3,7 @@
 #include "days/Day02.h"
 #include "days/Day03.h"
 #include "days/Day04.h"
+#include "days/Day05.h"
 #include <iostream>
 #include <signal.h>
 
@@ -15,7 +16,7 @@
 #include <unistd.h>
 #endif
 
-const int DAYS_IMPLEMENTED = 4;
+const int DAYS_IMPLEMENTED = 5;
 int cursor = DAYS_IMPLEMENTED;
 bool exitFlag = false;
 
@@ -149,6 +150,9 @@ void solveDay() {
     } else if (cursor == 4) {
         d4p1();
         d4p2();
+	} else if (cursor == 5) {
+		d5p1();
+		d5p2();
     } else {
         std::cout << BOLDRED << "Day " << cursor << RESET << " not implemented yet"
                 << std::endl;
