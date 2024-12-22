@@ -18,6 +18,8 @@ struct Vec2
     Vec2 operator+(Vec2 other);
     Vec2 operator-(Vec2 &other);
     Vec2 operator*(int other);
+	Vec2 operator/(int other);
+	bool operator==(Vec2 other);
     std::ostream operator<<(std::ostream &os);
 
     int x, y;
@@ -44,6 +46,18 @@ inline Vec2 Vec2::operator*(int other)
         this->y * other};
 }
 
+inline bool Vec2::operator==(Vec2 other)
+{
+	return (this->x == other.x && this->y == other.y);
+}
+
+inline Vec2 Vec2::operator/(int other)
+{
+	return {
+		this->x / other,
+		this->y / other
+	};
+}
 inline std::ostream &operator<<(std::ostream &os, const Vec2 &v)
 {
     os << "{" << v.x << ":" << v.y << "}";
