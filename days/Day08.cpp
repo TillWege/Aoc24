@@ -109,7 +109,6 @@ bool isAntinodeP2(const AntennaList& list, Vec2 pos, char frequency)
 
 void d8p1()
 {
-	return;
 	std::ifstream file("./Inputs/Day08.txt");
 	std::string str;
 
