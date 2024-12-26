@@ -19,7 +19,6 @@ std::vector<UpdateRule> rules;
 std::vector<Update> updates;
 
 bool isUpdateOrderedCorrectly(Update update){
-
 	bool isCorrect = true;
 	for(int i = 0; i<update.size(); i++)
 	{
@@ -34,10 +33,8 @@ bool isUpdateOrderedCorrectly(Update update){
 					isCorrect = false;
 				}
 			}
-
 		}
 	}
-
 	return isCorrect;
 }
 
@@ -46,8 +43,7 @@ enum state {
 	updateState,
 };
 
-void d5p1()
-{
+void Day05::load() {
 	std::ifstream file("./Inputs/Day05.txt");
 	std::string str;
 
@@ -84,16 +80,16 @@ void d5p1()
 			}
 
 			updates.push_back(u);
-
 		}
-
 	}
 	printf("Got %zu rules\n", rules.size());
 	printf("Got %zu updates\n", updates.size());
+}
 
+void Day05::part1() {
+	load();
 	int sum = 0;
 	for (const auto& item : updates){
-
 		if(isUpdateOrderedCorrectly(item))
 		{
 			auto len = item.size();
@@ -101,7 +97,6 @@ void d5p1()
 			sum += mid;
 		}
 	}
-
 	std::cout << "Sum of correctly ordered Updates: " << BOLDGREEN << sum << RESET << std::endl;
 }
 
@@ -121,61 +116,14 @@ Update getFixedUpdate(Update update)
 					return update;
 				}
 			}
-
 		}
 	}
 	return update;
 }
 
-void d5p2()
-{
-	std::ifstream file("./Inputs/Day05.txt");
-	std::string str;
-
-	state state = ruleState;
-
-	rules.clear();
-	updates.clear();
-
-	while (std::getline(file, str))
-	{
-		if(state == ruleState)
-		{
-			if(str.empty())
-			{
-				state = updateState;
-				continue;
-			}
-
-			auto parts = split(str, '|');
-			int r1, r2;
-
-			r1 = std::stoi(parts[0]);
-			r2 = std::stoi(parts[1]);
-
-			UpdateRule r = {
-				r1,r2
-			};
-
-			rules.push_back(r);
-		} else {
-			Update u;
-			auto parts = split(str, ',');
-
-			for (const auto& item : parts)
-			{
-				u.push_back(std::stoi(item));
-			}
-
-			updates.push_back(u);
-
-		}
-
-	}
-
+void Day05::part2() {
 	int sum = 0;
 	for (const auto& item : updates){
-
 		if(!isUpdateOrderedCorrectly(item))
 		{
 			Update fixedUpdate = item;
@@ -189,6 +137,5 @@ void d5p2()
 			sum += mid;
 		}
 	}
-
 	std::cout << "Sum of fixed incorrectly ordered Updates: " << BOLDGREEN << sum << RESET << std::endl;
 }

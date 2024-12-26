@@ -1,213 +1,195 @@
-//
-// Created by tillw on 23/12/2024.
-//
-
 #include "Day09.h"
 #include "../common.h"
 #include <fstream>
 #include <string>
 #include <vector>
 
-void d9p1()
-{
-	std::ifstream file("./Inputs/Day09.txt");
-	std::string input;
+void Day09::load() {
+    // Load any necessary data here
+}
 
-	std::vector<int> data;
+void Day09::part1() {
+    std::ifstream file("./Inputs/Day09.txt");
+    std::string input;
 
-	std::getline(file, input);
+    std::vector<int> data;
 
-	input = "2333133121414131402";
+    std::getline(file, input);
 
-	bool isBlockMode = true;
-	int idx = 0;
+    input = "2333133121414131402";
 
-	for(int i = 0; i < input.length(); i++)
-	{
-		int num = std::stoi(input.substr(i, 1));
+    bool isBlockMode = true;
+    int idx = 0;
 
-		if(isBlockMode)
-		{
-			auto vals = std::vector<int>(num, idx);
-			data.insert(data.end(), vals.begin(), vals.end());
+    for(int i = 0; i < input.length(); i++)
+    {
+        int num = std::stoi(input.substr(i, 1));
 
-			idx++;
-		} else {
-			auto vals = std::vector<int>(num, -1);
-			data.insert(data.end(), vals.begin(), vals.end());
-		}
+        if(isBlockMode)
+        {
+            auto vals = std::vector<int>(num, idx);
+            data.insert(data.end(), vals.begin(), vals.end());
 
-		isBlockMode = !isBlockMode;
-	}
+            idx++;
+        } else {
+            auto vals = std::vector<int>(num, -1);
+            data.insert(data.end(), vals.begin(), vals.end());
+        }
 
-	printf("Shifting data\n");
+        isBlockMode = !isBlockMode;
+    }
 
-	for (int i = 0; i < data.size(); ++i) {
-		if (data[i] == -1) {
-			for (int j = data.size() - 1; j > i; --j) {
-				if (data[j] != -1) {
-					data[i] = data[j];
-					data[j] = -1;
-					break;
-				}
-			}
-		}
-	}
+    printf("Shifting data\n");
 
-	printf("Done shifting data\n");
-	printf("Calculating checksum\n");
+    for (int i = 0; i < data.size(); ++i) {
+        if (data[i] == -1) {
+            for (int j = data.size() - 1; j > i; --j) {
+                if (data[j] != -1) {
+                    data[i] = data[j];
+                    data[j] = -1;
+                    break;
+                }
+            }
+        }
+    }
 
-	long long checksum = 0;
-	for(int i = 0; i < data.size(); i++)
-	{
-		if(data[i] != -1)
-		{
-			checksum += data[i] * i;
-		}
-	}
+    printf("Done shifting data\n");
+    printf("Calculating checksum\n");
 
-	// To low: 1584838699
-	//       : 1645060967
+    long long checksum = 0;
+    for(int i = 0; i < data.size(); i++)
+    {
+        if(data[i] != -1)
+        {
+            checksum += data[i] * i;
+        }
+    }
 
-	printf("Done calculating checksum: %lld \n", checksum);
-
+    printf("Done calculating checksum: %lld \n", checksum);
 }
 
 enum BlockType{
-	DATA,
-	FREE,
+    DATA,
+    FREE,
 };
 
 struct Block
 {
-	BlockType type;
-	int size;
-	int id;
+    BlockType type;
+    int size;
+    int id;
 };
 
 typedef std::vector<Block> fsData;
 
 void printData(const fsData* data)
 {
-	for(auto & i : *data)
-	{
-		if(i.type == BlockType::FREE)
-		{
-			for(int j = 0; j < i.size; j++)
-			{
-				printf(".");
-			}
+    for(auto & i : *data)
+    {
+        if(i.type == BlockType::FREE)
+        {
+            for(int j = 0; j < i.size; j++)
+            {
+                printf(".");
+            }
 
-		} else {
-			for(int j = 0; j < i.size; j++)
-			{
-				printf("%d", i.id);
-			}
-		}
-	}
-	printf("\n");
+        } else {
+            for(int j = 0; j < i.size; j++)
+            {
+                printf("%d", i.id);
+            }
+        }
+    }
+    printf("\n");
 }
 
-void d9p2()
-{
-	std::ifstream file("./Inputs/Day09.txt");
-	std::string input;
+void Day09::part2() {
+    std::ifstream file("./Inputs/Day09.txt");
+    std::string input;
 
-	fsData data;
+    fsData data;
 
-	std::getline(file, input);
+    std::getline(file, input);
 
-	//input = "2333133121414131402";
+    bool isBlockMode = true;
+    int idx = 0;
 
-	bool isBlockMode = true;
-	int idx = 0;
+    for(int i = 0; i < input.length(); i++)
+    {
+        int num = std::stoi(input.substr(i, 1));
 
-	for(int i = 0; i < input.length(); i++)
-	{
-		int num = std::stoi(input.substr(i, 1));
+        if(isBlockMode)
+        {
+            Block b = {
+                BlockType::DATA,
+                num,
+                idx
+            };
+            data.push_back(b);
 
-		if(isBlockMode)
-		{
-			auto vals = std::vector<int>(num, idx);
+            idx++;
+        } else {
+            Block b = {
+                BlockType::FREE,
+                num,
+                -1
+            };
+            data.push_back(b);
+        }
 
-			Block b = {
-				BlockType::DATA,
-				num,
-				idx
-			};
-			data.push_back(b);
+        isBlockMode = !isBlockMode;
+    }
 
-			idx++;
-		} else {
-			auto vals = std::vector<int>(num, -1);
+    for(int maxId = data[data.size() - 1].id; maxId > 0; maxId--)
+    {
+        int id;
+        for(id = 0; id < data.size(); id++)
+        {
+            if(data[id].id == maxId)
+            {
+                break;
+            }
+        }
 
-			Block b = {
-				BlockType::FREE,
-				num,
-				-1
-			};
-			data.push_back(b);
-		}
+        for(int i = 0; i < data.size(); i++)
+        {
+            if((data[i].type == BlockType::FREE) && (data[i].size >= data[id].size) && (i < id))
+            {
+                data[i].size -= data[id].size;
+                data.insert(data.begin() + i, data[id]);
 
-		isBlockMode = !isBlockMode;
-	}
+                data[id + 1].type = BlockType::FREE;
+                data[id + 1].id = -1;
+                break;
+            }
+        }
+    }
 
+    printf("Final Data:\n");
+    printData(&data);
 
+    long long checksum = 0;
+    std::vector<int> nums;
 
-	for(int maxId = data[data.size() - 1].id; maxId > 0; maxId--)
-	{
-		int id;
-		for(id = 0; id < data.size(); id++)
-		{
-			if(data[id].id == maxId)
-			{
-				break;
-			}
-		}
+    for(int i = 0; i < data.size(); i++)
+    {
+        if(data[i].type == BlockType::DATA)
+        {
+            for(int j = 0; j < data[i].size; j++)
+            {
+                nums.push_back(data[i].id);
+            }
+        } else {
+            for(int j = 0; j < data[i].size; j++)
+            {
+                nums.push_back(-1);
+            }
+        }
+    }
 
-		for(int i = 0; i < data.size(); i++)
-		{
-			if((data[i].type == BlockType::FREE) && (data[i].size >= data[id].size) && (i < id))
-			{
-				data[i].size -= data[id].size;
-				data.insert(data.begin() + i, data[id]);
+    for(int i = 0; i < nums.size(); i++)
+        if(nums[i] != -1)
+            checksum += nums[i] * i;
 
-				data[id + 1].type = BlockType::FREE;
-				data[id + 1].id = -1;
-				break;
-			}
-		}
-		//printData(&data);
-	}
-
-	printf("Final Data:\n");
-
-	printData(&data);
-
-	long long checksum = 0;
-
-	std::vector<int> nums;
-
-	for(int i = 0; i < data.size(); i++)
-	{
-		if(data[i].type == BlockType::DATA)
-		{
-			for(int j = 0; j < data[i].size; j++)
-			{
-				nums.push_back(data[i].id);
-			}
-		} else {
-			for(int j = 0; j < data[i].size; j++)
-			{
-				nums.push_back(-1);
-			}
-		}
-	}
-
-	for(int i = 0; i < nums.size(); i++)
-		if(nums[i] != -1)
-			checksum += nums[i] * i;
-
-	printf("Final Checksum: %llu\n", checksum);
-
+    printf("Final Checksum: %llu\n", checksum);
 }

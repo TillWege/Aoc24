@@ -126,235 +126,230 @@ int getPerimeterLength(Region region)
 	return length;
 }
 
-void d12p1()
-{
-	return;
-	std::ifstream file("./Inputs/Day12.txt");
-	std::string input((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
-	//input = Example;
+void Day12::load() {
+}
 
-	Map map;
-	Regions regions;
-	auto lines = split(input, '\n');
+void Day12::part1() {
+    std::ifstream file("./Inputs/Day12.txt");
+    std::string input((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
 
-	for(const auto& line : lines)
-	{
-		std::vector<char> lineChars;
-		for(const auto& c : line)
-		{
-			lineChars.push_back(c);
-		}
-		map.push_back(lineChars);
-	}
+    Map map;
+    Regions regions;
+    auto lines = split(input, '\n');
 
-	printf("Map dimensions: %zu x %zu\n", map.size(), map[0].size());
+    for(const auto& line : lines)
+    {
+        std::vector<char> lineChars;
+        for(const auto& c : line)
+        {
+            lineChars.push_back(c);
+        }
+        map.push_back(lineChars);
+    }
 
-	for(int y = 0; y < map.size(); y++)
-	{
-		for(int x = 0; x < map[0].size(); x++)
-		{
-			floodFill(map, {x,y}, regions);
-		}
-	}
+    printf("Map dimensions: %zu x %zu\n", map.size(), map[0].size());
 
-	printf("Found %zu regions\n", regions.size());
-	int totalPrice = 0;
-	for(const auto& region : regions)
-	{
-		printf("Region: %c Perimeter length: %d area: %llu\n", region.letter, getPerimeterLength(region), region.tiles.size());
-		totalPrice += getPerimeterLength(region) * region.tiles.size();
-	}
+    for(int y = 0; y < map.size(); y++)
+    {
+        for(int x = 0; x < map[0].size(); x++)
+        {
+            floodFill(map, {x,y}, regions);
+        }
+    }
 
-	printf("Total price: %d\n", totalPrice);
+    printf("Found %zu regions\n", regions.size());
+    int totalPrice = 0;
+    for(const auto& region : regions)
+    {
+        printf("Region: %c Perimeter length: %d area: %llu\n", region.letter, getPerimeterLength(region), region.tiles.size());
+        totalPrice += getPerimeterLength(region) * region.tiles.size();
+    }
+
+    printf("Total price: %d\n", totalPrice);
 }
 
 int getSides(Region region, const Map& map)
 {
-	int width = map[0].size();
-	int height = map.size();
+    int width = map[0].size();
+    int height = map.size();
 
+    bool debug = region.letter == 'C';
 
-	bool debug = region.letter == 'C';
+    Vec2 MostTopLeft = Vec2{height - 1,width - 1};
+    Vec2 MostBottomRight = Vec2{0,0};
 
-	Vec2 MostTopLeft = Vec2{height - 1,width - 1};
-	Vec2 MostBottomRight = Vec2{0,0};
+    for(const auto& tile : region.tiles)
+    {
+        if(tile.x < MostTopLeft.x)
+            MostTopLeft.x = tile.x;
 
-	for(const auto& tile : region.tiles)
-	{
-		if(tile.x < MostTopLeft.x)
-			MostTopLeft.x = tile.x;
+        if(tile.y < MostTopLeft.y)
+            MostTopLeft.y = tile.y;
 
-		if(tile.y < MostTopLeft.y)
-			MostTopLeft.y = tile.y;
+        if(tile.x > MostBottomRight.x)
+            MostBottomRight.x = tile.x;
 
-		if(tile.x > MostBottomRight.x)
-			MostBottomRight.x = tile.x;
+        if(tile.y > MostBottomRight.y)
+            MostBottomRight.y = tile.y;
+    }
 
-		if(tile.y > MostBottomRight.y)
-			MostBottomRight.y = tile.y;
-	}
+    int lCount = 0;
+    int rCount = 0;
+    int tCount = 0;
+    int bCount = 0;
 
-	int lCount = 0;
-	int rCount = 0;
-	int tCount = 0;
-	int bCount = 0;
+    // Scan top to bottom
+    for(int y = MostTopLeft.y; y <= MostBottomRight.y; y++)
+    {
+        int lineWidth = MostBottomRight.x - MostTopLeft.x + 1;
+        std::vector<bool> topBorder = std::vector<bool>(lineWidth);
+        std::vector<bool> bottomBorder = std::vector<bool>(lineWidth);
+        for(int x = MostTopLeft.x; x <= MostBottomRight.x; x++)
+        {
+            if(region.contains({x,y}))
+            {
+                Vec2 pos = {x,y};
 
+                Vec2 topPos = pos + getMovement(Direction::UP);
+                Vec2 bottomPos = pos + getMovement(Direction::DOWN);
 
-	// Scan top to bottom
-	for(int y = MostTopLeft.y; y <= MostBottomRight.y; y++)
-	{
-		int lineWidth = MostBottomRight.x - MostTopLeft.x + 1;
-		std::vector<bool> topBorder = std::vector<bool>(lineWidth);
-		std::vector<bool> bottomBorder = std::vector<bool>(lineWidth);
-		for(int x = MostTopLeft.x; x <= MostBottomRight.x; x++)
-		{
+                topBorder[x - MostTopLeft.x] = (pos.y == 0) || (topPos.y >= 0 && (map[topPos.y][topPos.x] != region.letter));
+                bottomBorder[x - MostTopLeft.x] = (pos.y == height - 1) || (bottomPos.y < height && (map[bottomPos.y][bottomPos.x] != region.letter));
+            }
+        }
 
-			if(region.contains({x,y}))
-			{
-				Vec2 pos = {x,y};
+        int topBorderCount = 0;
+        bool lastTopBorder = false;
+        for(int i = 0; i < lineWidth; i++)
+        {
+            if(topBorder[i])
+            {
+                if(!lastTopBorder)
+                {
+                    topBorderCount++;
+                }
+                lastTopBorder = true;
+            } else {
+                lastTopBorder = false;
+            }
+        }
 
-				Vec2 topPos = pos + getMovement(Direction::UP);
-				Vec2 bottomPos = pos + getMovement(Direction::DOWN);
+        int bottomBorderCount = 0;
+        bool lastBottomBorder = false;
+        for(int i = lineWidth - 1; i >= 0; i--)
+        {
+            if(bottomBorder[i])
+            {
+                if(!lastBottomBorder)
+                {
+                    bottomBorderCount++;
+                }
+                lastBottomBorder = true;
+            } else {
+                lastBottomBorder = false;
+            }
+        }
 
-				topBorder[x - MostTopLeft.x] = (pos.y == 0) || (topPos.y >= 0 && (map[topPos.y][topPos.x] != region.letter));
-				bottomBorder[x - MostTopLeft.x] = (pos.y == height - 1) || (bottomPos.y < height && (map[bottomPos.y][bottomPos.x] != region.letter));
-			}
-		}
+        tCount += topBorderCount;
+        bCount += bottomBorderCount;
+    }
 
-		int topBorderCount = 0;
-		bool lastTopBorder = false;
-		for(int i = 0; i < lineWidth; i++)
-		{
-			if(topBorder[i])
-			{
-				if(!lastTopBorder)
-				{
-					topBorderCount++;
-				}
-				lastTopBorder = true;
-			} else {
-				lastTopBorder = false;
-			}
-		}
+    for(int x = MostTopLeft.x; x <= MostBottomRight.x; x++)
+    {
+        int lineHeight = MostBottomRight.y - MostTopLeft.y + 1;
+        std::vector<bool> leftBorder = std::vector<bool>(lineHeight);
+        std::vector<bool> rightBorder = std::vector<bool>(lineHeight);
+        for(int y = MostTopLeft.y; y <= MostBottomRight.y; y++)
+        {
+            if(region.contains({x,y}))
+            {
+                Vec2 pos = {x,y};
 
-		int bottomBorderCount = 0;
-		bool lastBottomBorder = false;
-		for(int i = lineWidth - 1; i >= 0; i--)
-		{
-			if(bottomBorder[i])
-			{
-				if(!lastBottomBorder)
-				{
-					bottomBorderCount++;
-				}
-				lastBottomBorder = true;
-			} else {
-				lastBottomBorder = false;
-			}
-		}
+                Vec2 leftPos = pos + getMovement(Direction::LEFT);
+                Vec2 rightPos = pos + getMovement(Direction::RIGHT);
 
-		tCount += topBorderCount;
-		bCount += bottomBorderCount;
-	}
+                leftBorder[y - MostTopLeft.y] = (pos.x == 0) || (leftPos.x >= 0 && (map[leftPos.y][leftPos.x] != region.letter));
+                rightBorder[y - MostTopLeft.y] = (pos.x == width - 1)
+                    || (rightPos.x < width && (map[rightPos.y][rightPos.x] != region.letter));
+            }
+        }
 
-	for(int x = MostTopLeft.x; x <= MostBottomRight.x; x++)
-	{
-		int lineHeight = MostBottomRight.y - MostTopLeft.y + 1;
-		std::vector<bool> leftBorder = std::vector<bool>(lineHeight);
-		std::vector<bool> rightBorder = std::vector<bool>(lineHeight);
-		for(int y = MostTopLeft.y; y <= MostBottomRight.y; y++)
-		{
-			if(region.contains({x,y}))
-			{
-				Vec2 pos = {x,y};
+        int leftBorderCount = 0;
+        bool lastLeftBorder = false;
+        for(int i = 0; i < lineHeight; i++)
+        {
+            if(leftBorder[i])
+            {
+                if(!lastLeftBorder)
+                {
+                    leftBorderCount++;
+                }
+                lastLeftBorder = true;
+            } else {
+                lastLeftBorder = false;
+            }
+        }
 
-				Vec2 leftPos = pos + getMovement(Direction::LEFT);
-				Vec2 rightPos = pos + getMovement(Direction::RIGHT);
+        int rightBorderCount = 0;
+        bool lastRightBorder = false;
+        for(int i = lineHeight - 1; i >= 0; i--)
+        {
+            if(rightBorder[i])
+            {
+                if(!lastRightBorder)
+                {
+                    rightBorderCount++;
+                }
+                lastRightBorder = true;
+            } else {
+                lastRightBorder = false;
+            }
+        }
 
-				leftBorder[y - MostTopLeft.y] = (pos.x == 0) || (leftPos.x >= 0 && (map[leftPos.y][leftPos.x] != region.letter));
-				rightBorder[y - MostTopLeft.y] = (pos.x == width - 1)
-					|| (rightPos.x < width && (map[rightPos.y][rightPos.x] != region.letter));
-			}
-		}
+        lCount += leftBorderCount;
+        rCount += rightBorderCount;
+    }
 
-		int leftBorderCount = 0;
-		bool lastLeftBorder = false;
-		for(int i = 0; i < lineHeight; i++)
-		{
-			if(leftBorder[i])
-			{
-				if(!lastLeftBorder)
-				{
-					leftBorderCount++;
-				}
-				lastLeftBorder = true;
-			} else {
-				lastLeftBorder = false;
-			}
-		}
-
-		int rightBorderCount = 0;
-		bool lastRightBorder = false;
-		for(int i = lineHeight - 1; i >= 0; i--)
-		{
-			if(rightBorder[i])
-			{
-				if(!lastRightBorder)
-				{
-					rightBorderCount++;
-				}
-				lastRightBorder = true;
-			} else {
-				lastRightBorder = false;
-			}
-		}
-
-		lCount += leftBorderCount;
-		rCount += rightBorderCount;
-	}
-
-	return tCount + bCount + lCount + rCount;
-
+    return tCount + bCount + lCount + rCount;
 }
 
-void d12p2()
-{
-	std::ifstream file("./Inputs/Day12.txt");
-	std::string input((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
-	//input = Example;
+void Day12::part2() {
+    std::ifstream file("./Inputs/Day12.txt");
+    std::string input((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
+    //input = Example;
 
-	Map map;
-	Regions regions;
-	auto lines = split(input, '\n');
+    Map map;
+    Regions regions;
+    auto lines = split(input, '\n');
 
-	for(const auto& line : lines)
-	{
-		std::vector<char> lineChars;
-		for(const auto& c : line)
-		{
-			lineChars.push_back(c);
-		}
-		map.push_back(lineChars);
-	}
+    for(const auto& line : lines)
+    {
+        std::vector<char> lineChars;
+        for(const auto& c : line)
+        {
+            lineChars.push_back(c);
+        }
+        map.push_back(lineChars);
+    }
 
-	printf("Map dimensions: %zu x %zu\n", map.size(), map[0].size());
+    printf("Map dimensions: %zu x %zu\n", map.size(), map[0].size());
 
-	for(int y = 0; y < map.size(); y++)
-	{
-		for(int x = 0; x < map[0].size(); x++)
-		{
-			floodFill(map, {x,y}, regions);
-		}
-	}
+    for(int y = 0; y < map.size(); y++)
+    {
+        for(int x = 0; x < map[0].size(); x++)
+        {
+            floodFill(map, {x,y}, regions);
+        }
+    }
 
-	printf("Found %zu regions\n", regions.size());
-	int totalPrice = 0;
-	for(const auto& region : regions)
-	{
-		printf("Region: %c area: %llu sides: %d\n", region.letter, region.tiles.size(), getSides(region, map));
-		totalPrice += getSides(region, map) * region.tiles.size();
-	}
+    printf("Found %zu regions\n", regions.size());
+    int totalPrice = 0;
+    for(const auto& region : regions)
+    {
+        printf("Region: %c area: %llu sides: %d\n", region.letter, region.tiles.size(), getSides(region, map));
+        totalPrice += getSides(region, map) * region.tiles.size();
+    }
 
-	// To high: 908978
-	printf("Total price: %d\n", totalPrice);
+    // To high: 908978
+    printf("Total price: %d\n", totalPrice);
 }

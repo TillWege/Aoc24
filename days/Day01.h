@@ -1,11 +1,17 @@
-//
-// Created by tillw on 05/12/2024.
-//
-
 #ifndef DAY01_H
 #define DAY01_H
 
-void d1p1();
-void d1p2();
+#include "DayBase.h"
+#include <vector>
 
-#endif //DAY01_H
+class Day01 : public DayBase {
+public:
+    void load() override;
+    void part1() override;
+    void part2() override;
+
+private:
+    std::vector<int> col1, col2;
+};
+
+#endif // DAY01_H

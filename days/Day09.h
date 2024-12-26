@@ -1,13 +1,13 @@
-//
-// Created by tillw on 23/12/2024.
-//
-
 #ifndef DAY09_H
 #define DAY09_H
 
+#include "DayBase.h"
 
-void d9p1();
-void d9p2();
-
+class Day09 : public DayBase {
+public:
+    void load() override;
+    void part1() override;
+    void part2() override;
+};
 
 #endif //DAY09_H

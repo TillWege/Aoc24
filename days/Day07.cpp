@@ -1,7 +1,3 @@
-//
-// Created by tillw on 22/12/2024.
-//
-
 #include <fstream>
 #include <string>
 #include <vector>
@@ -81,7 +77,6 @@ int64_t doOperation(int64_t a, int64_t b, Operation op)
 	return 0;
 }
 
-
 bool isCorrectP1(const Equation& eq)
 {
 	int ops = eq.Inputs.size() - 1;
@@ -103,11 +98,8 @@ bool isCorrectP1(const Equation& eq)
 		if(sum == eq.Result)
 		{
 			return true;
-
 		}
 	}
-
-
 	return false;
 }
 
@@ -132,16 +124,16 @@ bool isCorrectP2(const Equation& eq)
 		if(sum == eq.Result)
 		{
 			return true;
-
 		}
 	}
-
-
 	return false;
 }
 
-void d7p1()
-{
+void Day07::load() {
+    // Load any necessary data here if needed
+}
+
+void Day07::part1() {
 	std::ifstream file("./Inputs/Day07.txt");
 	std::string str;
 
@@ -183,7 +175,7 @@ void d7p1()
 	printf("Part 1: Found %s %d correct %s equations totalling %s %lld %s\n", BOLDGREEN, correctCount, RESET, BOLDGREEN, sumOfCorrect, RESET);
 }
 
-void d7p2(){
+void Day07::part2(){
 	std::ifstream file("./Inputs/Day07.txt");
 	std::string str;
 

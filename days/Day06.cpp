@@ -3,6 +3,7 @@
 #include <vector>
 #include "../common.h"
 #include "../colors.h"
+#include "Day06.h"
 
 enum Tile
 {
@@ -24,7 +25,6 @@ Tile getTile(char c)
 	else
 		return ERROR;
 }
-
 
 typedef std::vector<std::vector<Tile>> Map;
 
@@ -93,7 +93,11 @@ void printMap(const Map& map)
 	}
 }
 
-void d6p1()
+void Day06::load() {
+    // Load any necessary data here
+}
+
+void Day06::part1()
 {
 	std::ifstream file("./Inputs/Day06e.txt");
 	std::string str;
@@ -198,7 +202,7 @@ bool isLooping(Map map, Vec2 startPos, dir dir)
 	return true;
 }
 
-void d6p2()
+void Day06::part2()
 {
 	std::ifstream file("./Inputs/Day06.txt");
 	std::string str;

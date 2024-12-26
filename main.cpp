@@ -1,4 +1,5 @@
 #include "colors.h"
+#include "days/DayBase.h"
 #include "days/Day01.h"
 #include "days/Day02.h"
 #include "days/Day03.h"
@@ -13,6 +14,8 @@
 #include "days/Day12.h"
 #include <iostream>
 #include <signal.h>
+#include <memory>
+#include <array>
 
 #ifdef _WIN32
 #include <conio.h>
@@ -23,9 +26,25 @@
 #include <unistd.h>
 #endif
 
-const int DAYS_IMPLEMENTED = 12;
+
+const int DAYS_IMPLEMENTED = 11;
 int cursor = DAYS_IMPLEMENTED;
 bool exitFlag = false;
+
+std::array<std::unique_ptr<DayBase>, 12> days = {
+    std::make_unique<Day01>(),
+	std::make_unique<Day02>(),
+	std::make_unique<Day03>(),
+	std::make_unique<Day04>(),
+	std::make_unique<Day05>(),
+	std::make_unique<Day06>(),
+	std::make_unique<Day07>(),
+	std::make_unique<Day08>(),
+	std::make_unique<Day09>(),
+	std::make_unique<Day10>(),
+	std::make_unique<Day11>(),
+	std::make_unique<Day12>()
+};
 
 void signalHandler(int signum) { exitFlag = true; }
 
@@ -117,13 +136,11 @@ void displayMenu() {
         firstRun = false;
     }
 
-    // First clear all lines
     for (int i = 0; i < 25; i++) {
         setCursorPosition(0, i);
-        std::cout << "\033[K"; // Clear the entire line
+        std::cout << "\033[K";
     }
 
-    // Then draw menu
     for (int i = 1; i <= 25; i++) {
         setCursorPosition(0, i - 1);
         if (i == cursor)
@@ -145,42 +162,10 @@ void displayMenu() {
 void solveDay() {
     std::cout << "Running " << BOLDGREEN << "day " << cursor << RESET
             << std::endl;
-    if (cursor == 1) {
-        d1p1();
-        d1p2();
-    } else if (cursor == 2) {
-        d2p1();
-        d2p2();
-    } else if (cursor == 3) {
-        d3p1();
-        d3p2();
-    } else if (cursor == 4) {
-        d4p1();
-        d4p2();
-	} else if (cursor == 5) {
-		d5p1();
-		d5p2();
-	} else if (cursor == 6) {
-		d6p1();
-		d6p2();
-	} else if (cursor == 7) {
-		d7p1();
-		d7p2();
-	} else if (cursor == 8) {
-		d8p1();
-		d8p2();
-	} else if (cursor == 9) {
-		d9p1();
-		d9p2();
-	} else if (cursor == 10) {
-		d10p1();
-		d10p2();
-	} else if (cursor == 11) {
-		d11p1();
-		d11p2();
-	} else if (cursor == 12) {
-		d12p1();
-		d12p2();
+    
+    if (cursor > 0 && cursor <= DAYS_IMPLEMENTED && days[cursor - 1]) {
+        days[cursor - 1]->part1();
+        days[cursor - 1]->part2();
     } else {
         std::cout << BOLDRED << "Day " << cursor << RESET << " not implemented yet"
                 << std::endl;
@@ -209,14 +194,13 @@ int main(int argc, char *argv[]) {
                 char key = getch();
 #endif
                 if (key == 27) {
-                    // ESC key
                     char nextChar = getch();
                     if (nextChar == '[') {
                         char arrowKey = getch();
                         if (arrowKey == 'A' && cursor > 1)
-                            cursor--; // Up arrow
+                            cursor--;
                         else if (arrowKey == 'B' && cursor < 25)
-                            cursor++; // Down arrow
+                            cursor++;
                         displayMenu();
                     }
                     continue;
@@ -227,15 +211,15 @@ int main(int argc, char *argv[]) {
                 if (key == '\r' || key == '\n') {
                     showCursor();
                     clearScreen();
-                    setCursorPosition(0, 0); // Reset cursor position before solving
+                    setCursorPosition(0, 0);
                     solveDay();
                     break;
                 }
             }
         }
         showCursor();
-        setCursorPosition(0, 25); // Move cursor to after the menu
-        std::cout << "\033[K"; // Clear the line
+        setCursorPosition(0, 25);
+        std::cout << "\033[K";
         std::cout.flush();
     } else {
         solveDay();

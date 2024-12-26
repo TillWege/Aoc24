@@ -1,12 +1,13 @@
-//
-// Created by tillw on 05/12/2024.
-//
-
 #ifndef DAY04_H
 #define DAY04_H
 
+#include "DayBase.h"
 
-void d4p1();
-void d4p2();
+class Day04 : public DayBase {
+public:
+    void load() override;
+    void part1() override;
+    void part2() override;
+};
 
-#endif //DAY04_H
+#endif // DAY04_H
