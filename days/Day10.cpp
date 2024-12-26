@@ -4,41 +4,9 @@
 
 #include "Day10.h"
 #include "../common.h"
-#include "../colors.h"
 
 #include <string>
 #include <fstream>
-
-enum Direction
-{
-	UP,
-	RIGHT,
-	DOWN,
-	LEFT,
-};
-
-const Direction DIRECTIONS[] = {
-		UP,
-		RIGHT,
-		DOWN,
-		LEFT,
-};
-
-Vec2 getMovement(Direction dir)
-{
-	switch (dir)
-	{
-	case UP:
-		return { 0, -1 };
-	case DOWN:
-		return { 0, 1 };
-	case LEFT:
-		return { -1, 0 };
-	case RIGHT:
-		return { 1, 0 };
-
-	}
-}
 
 typedef std::vector<std::vector<int>> Map;
 
