@@ -12,6 +12,7 @@
 #include "days/Day10.h"
 #include "days/Day11.h"
 #include "days/Day12.h"
+#include "days/Day13.h"
 #include <iostream>
 #include <signal.h>
 #include <memory>
@@ -27,11 +28,11 @@
 #endif
 
 
-const int DAYS_IMPLEMENTED = 11;
+const int DAYS_IMPLEMENTED = 13;
 int cursor = DAYS_IMPLEMENTED;
 bool exitFlag = false;
 
-std::array<std::unique_ptr<DayBase>, 12> days = {
+std::array<std::unique_ptr<DayBase>, 13> days = {
     std::make_unique<Day01>(),
 	std::make_unique<Day02>(),
 	std::make_unique<Day03>(),
@@ -43,7 +44,8 @@ std::array<std::unique_ptr<DayBase>, 12> days = {
 	std::make_unique<Day09>(),
 	std::make_unique<Day10>(),
 	std::make_unique<Day11>(),
-	std::make_unique<Day12>()
+	std::make_unique<Day12>(),
+	std::make_unique<Day13>()
 };
 
 void signalHandler(int signum) { exitFlag = true; }
