@@ -9,6 +9,9 @@
 #include "../common.h"
 #include <vector>
 #include <optional>
+#include <cinttypes>
+
+typedef Vec2<int64_t > Vec2Long;
 
 class Day13 : public DayBase {
 public:
@@ -17,10 +20,11 @@ public:
     void part2() override;
 private:
 	struct Clawmachine {
-		Vec2 ButtonA;
-		Vec2 ButtonB;
-		Vec2 Prize;
+		Vec2Long ButtonA;
+		Vec2Long ButtonB;
+		Vec2Long Prize;
 
+		std::optional<int> getLowestTicketsSimple();
 		std::optional<int> getLowestTickets();
 	};
 

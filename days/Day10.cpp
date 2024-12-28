@@ -7,7 +7,7 @@
 #include <string>
 #include <fstream>
 
-bool Day10::isMoveAllowed(const Vec2& pos, Direction dir)
+bool Day10::isMoveAllowed(const Vec2<>& pos, Direction dir)
 {
     int diff = 0;
 	Vec2 myPos = pos;
@@ -22,9 +22,9 @@ bool Day10::isMoveAllowed(const Vec2& pos, Direction dir)
     return diff == 1;
 }
 
-int Day10::getTrailHeadSum(const Vec2& startPos, bool filterDupes) {
-    std::vector<Vec2> TilesToVisit;
-    std::vector<Vec2> PeaksFound;
+int Day10::getTrailHeadSum(const Vec2<>& startPos, bool filterDupes) {
+    std::vector<Vec2<>> TilesToVisit;
+    std::vector<Vec2<>> PeaksFound;
 
     TilesToVisit.push_back(startPos);
 

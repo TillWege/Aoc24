@@ -11,86 +11,102 @@
 #include <vector>
 #include <iterator>
 
-struct Vec2
-{
-    Vec2(int x, int y) : x(x), y(y) {}
+template <typename T = int>
+struct Vec2 {
+	T x, y;
 
-    Vec2 operator+(Vec2 other);
-    Vec2 operator-(Vec2 &other);
-    Vec2 operator*(int other);
-	Vec2 operator/(int other);
-	bool operator==(Vec2 other);
-	bool operator<(const Vec2& other) const;
-    std::ostream operator<<(std::ostream &os);
+	Vec2() : x(0), y(0) {}
+	Vec2(T x, T y) : x(x), y(y) {}
 
-    int x, y;
+	Vec2(const Vec2& other) : x(other.x), y(other.y) {}
+
+	Vec2& operator=(const Vec2& other) {
+		if (this != &other) {
+			x = other.x;
+			y = other.y;
+		}
+		return *this;
+	}
+
+	Vec2 operator+(const Vec2& other) const {
+		return Vec2(x + other.x, y + other.y);
+	}
+
+	Vec2& operator+=(const Vec2& other) {
+		x += other.x;
+		y += other.y;
+		return *this;
+	}
+
+	Vec2 operator-(const Vec2& other) const {
+		return Vec2(x - other.x, y - other.y);
+	}
+
+	Vec2& operator-=(const Vec2& other) {
+		x -= other.x;
+		y -= other.y;
+		return *this;
+	}
+
+	Vec2 operator*(T scalar) const {
+		return Vec2(x * scalar, y * scalar);
+	}
+
+	Vec2& operator*=(T scalar) {
+		x *= scalar;
+		y *= scalar;
+		return *this;
+	}
+
+	Vec2 operator/(T scalar) const {
+		return Vec2(x / scalar, y / scalar);
+	}
+
+	Vec2& operator/=(T scalar) {
+		x /= scalar;
+		y /= scalar;
+		return *this;
+	}
+
+	T dot(const Vec2& other) const {
+		return x * other.x + y * other.y;
+	}
+
+	T magnitude() const {
+		return std::sqrt(x * x + y * y);
+	}
+
+	Vec2 normalized() const {
+		T mag = magnitude();
+		return Vec2(x / mag, y / mag);
+	}
+
+	bool operator==(const Vec2& other) const {
+		return x == other.x && y == other.y;
+	}
+
+	bool operator!=(const Vec2& other) const {
+		return !(*this == other);
+	}
+
+	// Output stream operator
+	friend std::ostream& operator<<(std::ostream& os, const Vec2& vec) {
+		os << "(" << vec.x << ", " << vec.y << ")";
+		return os;
+	}
 };
 
-inline Vec2 Vec2::operator+(Vec2 other)
-{
-    return {
-        this->x + other.x,
-        this->y + other.y};
-}
-
-inline Vec2 Vec2::operator-(Vec2 &other)
-{
-    return {
-        this->x - other.x,
-        this->y - other.y};
-}
-
-inline Vec2 Vec2::operator*(int other)
-{
-    return {
-        this->x * other,
-        this->y * other};
-}
-
-inline bool Vec2::operator==(Vec2 other)
-{
-	return (this->x == other.x && this->y == other.y);
-}
-
-inline Vec2 Vec2::operator/(int other)
-{
-	return {
-		this->x / other,
-		this->y / other
-	};
-}
-inline bool Vec2::operator<(const Vec2& other) const
-{
-	if(this->x < other.x)
-		return true;
-	else if(this->x > other.x)
-		return false;
-	else
-		return this->y < other.y;
-}
-inline std::ostream &operator<<(std::ostream &os, const Vec2 &v)
-{
-    os << "{" << v.x << ":" << v.y << "}";
-    return os;
-}
+//  ┌─────────────────────┐
+//  │  String Functions   │
+//  └─────────────────────┘
 
 template <typename Out>
-inline void split(const std::string &s, char delim, Out result)
-{
-    std::istringstream iss(s);
-    std::string item;
-    while (std::getline(iss, item, delim))
-    {
-        *result++ = item;
-    }
-}
+inline void split(const std::string &s, char delim, Out result);
+std::vector<std::string> split(const std::string &s, char delim);
 
-inline std::vector<std::string> split(const std::string &s, char delim)
-{
-    std::vector<std::string> elems;
-    split(s, delim, std::back_inserter(elems));
-    return elems;
-}
+//  ┌──────────────────────────┐
+//  │  Directions & Functions  │
+//  └──────────────────────────┘
 
 enum class Direction
 {
@@ -107,20 +123,6 @@ const Direction DIRECTIONS[] = {
 		Direction::LEFT,
 };
 
-inline Vec2 getMovement(Direction dir)
-{
-	switch (dir)
-	{
-	case Direction::UP:
-		return { 0, -1 };
-	case Direction::DOWN:
-		return { 0, 1 };
-	case Direction::LEFT:
-		return { -1, 0 };
-	case Direction::RIGHT:
-		return { 1, 0 };
-
-	}
-}
+Vec2<> getMovement(Direction dir);
 
 #endif // COMMON_H

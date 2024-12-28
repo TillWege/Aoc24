@@ -22,10 +22,10 @@ std::string Example = "RRRRIICCFF\n"
 
 struct Region
 {
-	std::vector<Vec2> tiles;
+	std::vector<Vec2<>> tiles;
 	char letter;
 
-	bool contains(Vec2 pos)
+	bool contains(Vec2<> pos)
 	{
 		for(const auto& tile : tiles)
 		{
@@ -35,7 +35,7 @@ struct Region
 		return false;
 	}
 
-	bool addTile(Vec2 pos)
+	bool addTile(Vec2<> pos)
 	{
 		if(contains(pos))
 			return false;
@@ -48,7 +48,7 @@ struct Region
 typedef std::vector<std::vector<char>> Map;
 typedef std::vector<Region> Regions;
 
-bool isTileClaimed(const Regions& regions, Vec2 pos)
+bool isTileClaimed(const Regions& regions, Vec2<> pos)
 {
 	for(Region region : regions)
 	{
@@ -58,26 +58,38 @@ bool isTileClaimed(const Regions& regions, Vec2 pos)
 	return false;
 }
 
-void floodFill(const Map& map, Vec2 startPos, Regions& regions)
+void floodFill(const Map& map, Vec2<>& startPos, Regions& regions)
 {
 	if (isTileClaimed(regions, startPos))
 		return;
 
 	Region region;
 	region.letter = map[startPos.y][startPos.x];
-	std::vector<Vec2> TilesToVisit;
-	std::set<Vec2> TilesChecked;
+	std::vector<Vec2<>> TilesToVisit;
+	std::vector<Vec2<>> TilesChecked;
+
+
 
 	TilesToVisit.push_back(startPos);
 
 	while(!TilesToVisit.empty())
 	{
-		Vec2 pos = TilesToVisit.back();
+		Vec2<> pos = TilesToVisit.back();
 		TilesToVisit.pop_back();
 
-		if(TilesChecked.contains(pos))
+		bool isChecked = false;
+		for(const auto& checked : TilesChecked)
+		{
+			if(pos == checked)
+			{
+				isChecked = true;
+				break;
+			}
+		}
+		if(isChecked)
 			continue;
-		TilesChecked.insert(pos);
+
+		TilesChecked.push_back(pos);
 
 		if (!region.addTile(pos))
 			continue;
@@ -153,7 +165,8 @@ void Day12::part1() {
     {
         for(int x = 0; x < map[0].size(); x++)
         {
-            floodFill(map, {x,y}, regions);
+			Vec2<> pos = {x,y};
+            floodFill(map, pos, regions);
         }
     }
 
@@ -338,7 +351,8 @@ void Day12::part2() {
     {
         for(int x = 0; x < map[0].size(); x++)
         {
-            floodFill(map, {x,y}, regions);
+			Vec2<> pos = {x,y};
+            floodFill(map, pos, regions);
         }
     }
 

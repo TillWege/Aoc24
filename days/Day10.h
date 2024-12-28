@@ -17,10 +17,10 @@ public:
 
 private:
     std::vector<std::vector<int>> mapData;
-    std::vector<Vec2> possibleStarts;
+    std::vector<Vec2<>> possibleStarts;
     
-    bool isMoveAllowed(const Vec2& pos, Direction dir);
-    int getTrailHeadSum(const Vec2& startPos, bool filterDupes = true);
+    bool isMoveAllowed(const Vec2<>& pos, Direction dir);
+    int getTrailHeadSum(const Vec2<>& startPos, bool filterDupes = true);
 };
 
 #endif //DAY10_H

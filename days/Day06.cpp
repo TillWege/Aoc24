@@ -36,7 +36,7 @@ enum dir
 	LEFT,
 };
 
-Vec2 getMovement(dir dir)
+Vec2<> getMovement(dir dir)
 {
 	switch (dir)
 	{
@@ -168,7 +168,7 @@ void Day06::part1()
 	std::cout << "Visited " << visited << " tiles" << std::endl;
 }
 
-bool isLooping(Map map, Vec2 startPos, dir dir)
+bool isLooping(Map map, Vec2<> startPos, dir dir)
 {
 	const int MAX_STEPS = 10000;
 	Vec2 pos = startPos;

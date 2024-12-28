@@ -32,4 +32,5 @@ add_executable(AoC24 main.cpp
         days/Day12.h
         days/Day13.cpp
         days/Day13.h
+        common.cpp
 )

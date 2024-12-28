@@ -11,14 +11,14 @@ typedef std::variant<char, std::monostate> Tile;
 
 struct Antenna
 {
-    Vec2 pos;
+    Vec2<> pos;
     char frequency;
 };
 
 typedef std::vector<std::vector<Tile>> Map;
 typedef std::vector<Antenna> AntennaList;
 
-Vec2 getDistance(Vec2 a, Vec2 b)
+Vec2<> getDistance(Vec2<> a, Vec2<> b)
 {
     return {
         a.x - b.x,
@@ -26,7 +26,7 @@ Vec2 getDistance(Vec2 a, Vec2 b)
     };
 }
 
-bool isAntinodeP1(const AntennaList& list, Vec2 pos, char frequency)
+bool isAntinodeP1(const AntennaList& list, Vec2<> pos, char frequency)
 {
     for(int y = 0; y < list.size(); y++)
     {
@@ -57,7 +57,7 @@ bool isAntinodeP1(const AntennaList& list, Vec2 pos, char frequency)
     return false;
 }
 
-bool isAntinodeP2(const AntennaList& list, Vec2 pos, char frequency)
+bool isAntinodeP2(const AntennaList& list, Vec2<> pos, char frequency)
 {
     for(int y = 0; y < list.size(); y++)
     {

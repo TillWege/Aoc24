@@ -20,7 +20,7 @@ public:
         TOPLEFT
     };
 
-    Vec2 fromDir(dir dir) {
+    Vec2<> fromDir(dir dir) {
         switch (dir) {
             case TOP: return { 0, -1 };
             case TOPRIGHT: return { 1, -1 };
@@ -33,7 +33,7 @@ public:
         }
     }
 
-    int findXMAS(Vec2 pos) {
+    int findXMAS(Vec2<> pos) {
         auto maxDim = data.size();
         auto lineLength = data[0].length();
 
@@ -57,7 +57,7 @@ public:
         return foundCount;
     }
 
-    bool findCrossMass(Vec2 pos) {
+    bool findCrossMass(Vec2<> pos) {
         auto maxDim = data.size();
         auto lineLength = data[0].length();
 
