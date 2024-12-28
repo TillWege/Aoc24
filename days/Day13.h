@@ -25,7 +25,7 @@ private:
 		Vec2Long Prize;
 
 		std::optional<int> getLowestTicketsSimple();
-		std::optional<int> getLowestTickets();
+		std::optional<int64_t> getLowestTickets();
 	};
 
 	std::vector<Clawmachine> clawmachines;

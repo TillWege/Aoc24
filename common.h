@@ -125,4 +125,10 @@ const Direction DIRECTIONS[] = {
 
 Vec2<> getMovement(Direction dir);
 
+//  ┌──────────────────────────┐
+//  │  Common Functions        |
+//  └──────────────────────────┘
+
+void triggerBreakpoint();
+
 #endif // COMMON_H

@@ -102,34 +102,26 @@ std::optional<int> Day13::Clawmachine::getLowestTicketsSimple()
 	return lowestTickets;
 }
 
-std::optional<int> Day13::Clawmachine::getLowestTickets()
+std::optional<int64_t> Day13::Clawmachine::getLowestTickets()
 {
-	auto corrVal = this->getLowestTicketsSimple();
+	int64_t aXwithbY = this->ButtonA.x * this->ButtonB.y;
+	int64_t prizeXwithbY = this->Prize.x * this->ButtonB.y;
 
-	if(corrVal)
-		__debugbreak();
+	int64_t aYwithbX = this->ButtonA.y * this->ButtonB.x;
+	int64_t prizeYwithbX = this->Prize.y * this->ButtonB.x;
 
-	uint64_t scalarX = (this->Prize.x % this->ButtonA.x) + 1;
-	uint64_t scalarY = (this->Prize.y % this->ButtonA.y) + 1;
+	int64_t rX = (prizeXwithbY - prizeYwithbX) / (aXwithbY - aYwithbX);
+	int64_t rY = (this->Prize.y - this->ButtonA.y * rX) / this->ButtonB.y;
 
-	uint64_t scalar = ;
+	Vec2Long test = Vec2Long{
+		(rX*this->ButtonA.x) + (rY*this->ButtonB.x),
+		(rX*this->ButtonA.y) + (rY*this->ButtonB.y)
+	};
 
-	Vec2Long buttonDiff = this->ButtonB - this->ButtonA;
+	if(test != this->Prize)
+		return std::nullopt;
 
-	Vec2Long overshoot = this->ButtonA * scalarX;
-
-	uint64_t diffX = this-> Prize.x / overshoot.x;
-	uint64_t diffY = this-> Prize.y / overshoot.y;
-
-	float coeffX = float(diffX) / float(this->ButtonB.x);
-	float coeffY = float(diffY) / float(this->ButtonB.y);
-
-	if(coeffX == coeffY)
-	{
-
-	}
-
-	return std::nullopt;
+	return rX*3 + rY;
 }
 
 void Day13::part1()
@@ -141,15 +133,11 @@ void Day13::part1()
 
 	for(Clawmachine clawmachine : clawmachines)
 	{
-		auto lowestTickets = clawmachine.getLowestTickets();
-		if(lowestTickets)
-		{
-			ticketSum += *lowestTickets;
-			prizeCount++;
-		}
+		auto val = clawmachine.getLowestTicketsSimple();
+		if(val)
+			ticketSum += *val;
 	}
 
-	printf("Prize sum: %s%llu%s\n", BOLDGREEN, prizeCount, RESET);
 	printf("Number of tickets spend: %s%llu%s\n", BOLDGREEN, ticketSum, RESET);
 }
 
@@ -158,20 +146,17 @@ void Day13::part1()
 void Day13::part2()
 {
 	unsigned long long ticketSum = 0;
-	unsigned long long prizeCount = 0;
 
 	for(Clawmachine clawmachine : clawmachines)
 	{
 		clawmachine.Prize.x += 10000000000000;
 		clawmachine.Prize.y += 10000000000000;
-		auto lowestTickets = clawmachine.getLowestTicketsSimple();
-		if(lowestTickets)
-		{
-			ticketSum += *lowestTickets;
-			prizeCount++;
-		}
+		auto val = clawmachine.getLowestTickets();
+		if(val)
+			ticketSum += *val;
 	}
 
-	printf("Prize sum: %s%llu%s\n", BOLDGREEN, prizeCount, RESET);
+	// To high: 164803289827923
+
 	printf("Number of tickets spend: %s%llu%s\n", BOLDGREEN, ticketSum, RESET);
 }

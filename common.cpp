@@ -3,6 +3,19 @@
 //
 #include "common.h"
 
+
+#ifdef _MSC_VER
+	#include <intrin.h>
+	#define DEBUG_BREAK() __debugbreak()
+#else
+	#ifdef __APPLE__
+		#include <signal.h>
+		#define DEBUG_BREAK() raise(SIGTRAP)
+	#else
+		#define DEBUG_BREAK() __builtin_trap()
+	#endif
+#endif
+
 template <typename Out>
 void split(const std::string &s, char delim, Out result)
 {
@@ -35,4 +48,10 @@ Vec2<> getMovement(Direction dir)
 		return { 1, 0 };
 
 	}
+}
+
+void triggerBreakpoint() {
+#ifdef _DEBUG
+	DEBUG_BREAK();
+#endif
 }
